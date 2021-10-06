@@ -155,12 +155,15 @@ const App = () => {
 
 	const addBlog = (event) => {
 		event.preventDefault();
+		console.log('addBlog Triggered');
 		const blogObject = {
-			content: newBlog
+			title: newBlog
 		};
 
 		blogService.create(blogObject).then((returnedBlog) => {
 			setBlogs(blogs.concat(returnedBlog));
+			console.log(blogs, 'BLOGS IN CREATE');
+			console.log(returnedBlog, 'returnedBlog');
 			setNewBlog('');
 		});
 	};
@@ -188,6 +191,7 @@ const App = () => {
 	};
 
 	const blogsToShow = showAll ? blogs : blogs.filter((blog) => blog.important);
+
 	console.log(username, 'USERNAME');
 	console.log(password, 'password ');
 	const handleLogin = async (event) => {
@@ -241,6 +245,10 @@ const App = () => {
 			<button type="submit">save</button>
 		</form>
 	);
+	console.log(newUser, 'NEWUSER');
+	console.log(blogs, 'BLOGS 249');
+	const showBlogs = blogs.filter((blog) => blog.user?.username === newUser?.username);
+	console.log(showBlogs, 'SHOWBLOGS');
 
 	return (
 		<div>
@@ -253,6 +261,14 @@ const App = () => {
 				<div>
 					<p>{newUser.name} logged in</p>
 					{blogForm()}
+					{showBlogs.map((item) => {
+						return <h1>{item.title}</h1>;
+					})}
+					{/* <p> */}
+					{/* {newUser.blogs.map((item) => {
+							return <p>{item.title}</p>;
+						})} */}
+					{/* </p> */}
 				</div>
 			)}
 

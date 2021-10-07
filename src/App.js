@@ -4,11 +4,14 @@ import React, { useState, useEffect } from 'react';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import axios from 'axios';
 
 const App = () => {
 	const [ blogs, setBlogs ] = useState([]);
 	const [ logged, setLogged ] = useState(false);
 	const [ errorMessage, setErrorMessage ] = useState(null);
+	const [ updatedList, setUpdatedList ] = useState(false);
+
 
 	const [ username, setUsername ] = useState('newusertime');
 	const [ password, setPassword ] = useState('darkness33');
@@ -19,10 +22,15 @@ const App = () => {
 	const [ newUser, setNewUser ] = useState(null);
 
 	useEffect(() => {
-		blogService.getAll().then((initialBlogs) => {
-			setBlogs(initialBlogs);
-		});
-	}, []);
+    setTimeout(() => {
+      
+      blogService.getAll().then((initialBlogs) => {
+        console.log(initialBlogs, 'INITIALBLOGS ON UE')
+        setBlogs(initialBlogs);
+      });
+    }, 500);
+    
+	}, [updatedList]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -43,17 +51,16 @@ const App = () => {
       url: url
 		};
     console.log(blogObject, 'blogobject*****')
+    axios.post('http://localhost:3003/api/blogs', {token: newUser.token}, blogObject)
 		blogService.create(blogObject);
 			setBlogs(blogs.concat(blogObject));
+      setUpdatedList(!updatedList)
 			console.log(blogs, 'BLOGS IN CREATE');
-			// setNewBlog('');
+			setTitle('');
+			setAuthor('');
+			setUrl('');
 	
 	};
-
-	
-
-	console.log(username, 'USERNAME');
-	console.log(password, 'password ');
 
 	const handleLogin = async (event) => {
 		console.log('handlelogin called');
@@ -138,6 +145,7 @@ const App = () => {
 	console.log(showBlogs, 'SHOWBLOGS');
 	console.log(loggedIn,  'loggedIn******');
 	console.log(logged,  'logged146****');
+	console.log(updatedList,  'updatedList****');
 
 	return (
 		<div>

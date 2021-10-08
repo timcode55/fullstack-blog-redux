@@ -50,19 +50,19 @@ const App = () => {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>Initial log in</button>
+          <button onClick={() => setLoginVisible(true)}>Enter Login</button>
         </div>
         <div style={showWhenVisible}>
-          {/* <Togglable buttonLabel="login"> */}
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleLogin={handleLogin}
-          />
-          {/* </Togglable> */}
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
+          <Togglable buttonLabel="login">
+            <LoginForm
+              username={username}
+              password={password}
+              handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)}
+              handleLogin={handleLogin}
+            />
+          </Togglable>
+          {/* <button onClick={() => setLoginVisible(false)}>cancel</button> */}
         </div>
       </div>
     );

@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import LoginForm from "./components/LoginForm";
+import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 import axios from "axios";
 import "./App.css";
 
 const App = () => {
+  const [loginVisible, setLoginVisible] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -37,6 +41,32 @@ const App = () => {
       setLogged(true);
     }
   }, []);
+
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+    console.log(hideWhenVisible, "hideWhenVisible*****");
+    console.log(showWhenVisible, "showWhenVisible*****");
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>Initial log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          {/* <Togglable buttonLabel="login"> */}
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleLogin={handleLogin}
+          />
+          {/* </Togglable> */}
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    );
+  };
 
   const addBlog = async (event) => {
     event.preventDefault();
@@ -95,30 +125,6 @@ const App = () => {
     setLogged(false);
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
-
   const handleTitle = (e) => {
     setTitle(e.target.value);
   };
@@ -129,15 +135,15 @@ const App = () => {
     setUrl(e.target.value);
   };
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <h1>Add a New Blog</h1>
-      title: <input onChange={handleTitle} value={title || ""} />
-      author: <input onChange={handleAuthor} value={author || ""} />
-      url: <input onChange={handleUrl} value={url || ""} />
-      <button type="submit">save</button>
-    </form>
-  );
+  // const blogForm = () => (
+  //   <form onSubmit={addBlog}>
+  //     <h1>Add a New Blog</h1>
+  //     title: <input onChange={handleTitle} value={title || ""} />
+  //     author: <input onChange={handleAuthor} value={author || ""} />
+  //     url: <input onChange={handleUrl} value={url || ""} />
+  //     <button type="submit">save</button>
+  //   </form>
+  // );
 
   const loggedIn = window.localStorage.getItem("loggedBlogappUser");
 
@@ -162,7 +168,17 @@ const App = () => {
         <div>
           <h4>{newUser.name} logged in</h4>
           {loggedIn && <button onClick={() => handleLogOut()}>Logout </button>}
-          {blogForm()}
+          <Togglable buttonLabel="new note">
+            <BlogForm
+              addBlog={addBlog}
+              handleTitle={handleTitle}
+              handleAuthor={handleAuthor}
+              handleUrl={handleUrl}
+              title={title}
+              author={author}
+              url={url}
+            />
+          </Togglable>
           {loggedIn &&
             logged &&
             showBlogs.map((item) => {

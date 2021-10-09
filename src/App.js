@@ -16,11 +16,7 @@ const App = () => {
   const [updatedList, setUpdatedList] = useState(false);
   const [username, setUsername] = useState("newusertime");
   const [password, setPassword] = useState("darkness33");
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
   const [type, setType] = useState("");
-
   const [newUser, setNewUser] = useState(null);
 
   useEffect(() => {
@@ -68,12 +64,12 @@ const App = () => {
     );
   };
 
-  const addBlog = async (event) => {
-    event.preventDefault();
+  const createBlog = async (blog) => {
+    console.log(blog, "BLOG PASSED IN ******");
     const blogObject = {
-      title: title,
-      author: author,
-      url: url
+      title: blog.title,
+      author: blog.author,
+      url: blog.url
     };
     console.log(blogObject, "blogobject*****");
     axios.post(
@@ -84,15 +80,15 @@ const App = () => {
     blogService.create(blogObject);
     setBlogs(blogs.concat(blogObject));
     setUpdatedList(!updatedList);
-    setErrorMessage(`A new blog ${title} by ${author} added`);
+    setErrorMessage(
+      `A new blog ${blogObject.title} by ${blogObject.author} added`
+    );
     setType("blog");
     setTimeout(() => {
       setErrorMessage(null);
       setType(null);
     }, 5000);
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    console.log(blogs, "BLOGS 98*******");
   };
 
   const handleLogin = async (event) => {
@@ -125,37 +121,11 @@ const App = () => {
     setLogged(false);
   };
 
-  const handleTitle = (e) => {
-    setTitle(e.target.value);
-  };
-  const handleAuthor = (e) => {
-    setAuthor(e.target.value);
-  };
-  const handleUrl = (e) => {
-    setUrl(e.target.value);
-  };
-
-  // const blogForm = () => (
-  //   <form onSubmit={addBlog}>
-  //     <h1>Add a New Blog</h1>
-  //     title: <input onChange={handleTitle} value={title || ""} />
-  //     author: <input onChange={handleAuthor} value={author || ""} />
-  //     url: <input onChange={handleUrl} value={url || ""} />
-  //     <button type="submit">save</button>
-  //   </form>
-  // );
-
   const loggedIn = window.localStorage.getItem("loggedBlogappUser");
 
-  console.log(newUser, "NEWUSER");
-  console.log(blogs, "BLOGS 249");
   const showBlogs = blogs.filter(
     (blog) => blog.user?.username === newUser?.username
   );
-  console.log(showBlogs, "SHOWBLOGS");
-  console.log(loggedIn, "loggedIn******");
-  console.log(logged, "logged146****");
-  console.log(updatedList, "updatedList****");
 
   return (
     <div>
@@ -169,15 +139,7 @@ const App = () => {
           <h4>{newUser.name} logged in</h4>
           {loggedIn && <button onClick={() => handleLogOut()}>Logout </button>}
           <Togglable buttonLabel="new note">
-            <BlogForm
-              addBlog={addBlog}
-              handleTitle={handleTitle}
-              handleAuthor={handleAuthor}
-              handleUrl={handleUrl}
-              title={title}
-              author={author}
-              url={url}
-            />
+            <BlogForm createBlog={createBlog} />
           </Togglable>
           {loggedIn &&
             logged &&

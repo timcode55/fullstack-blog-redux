@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -64,8 +64,10 @@ const App = () => {
     );
   };
 
+  const blogFormRef = useRef(null);
+
   const createBlog = async (blog) => {
-    console.log(blog, "BLOG PASSED IN ******");
+    blogFormRef.current.toggleVisibility();
     const blogObject = {
       title: blog.title,
       author: blog.author,
@@ -127,6 +129,10 @@ const App = () => {
     (blog) => blog.user?.username === newUser?.username
   );
 
+  const displayBlogDetails = () => {
+    document.querySelector(".blog-details").classList.add("show");
+  };
+
   return (
     <div>
       <h1>Blogs</h1>
@@ -138,13 +144,21 @@ const App = () => {
         <div>
           <h4>{newUser.name} logged in</h4>
           {loggedIn && <button onClick={() => handleLogOut()}>Logout </button>}
-          <Togglable buttonLabel="new note">
+          <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
           </Togglable>
           {loggedIn &&
             logged &&
             showBlogs.map((item) => {
-              return <h2 key={item.id}>{item.title}</h2>;
+              return (
+                <div className="blog-details">
+                  <h2 key={item.id}>{item.title}</h2>
+                  <h2>{item.author}</h2>
+                  <h2>{item.url}</h2>
+                  <h2>{item.likes}</h2>
+                  <button onClick={displayBlogDetails}>view</button>
+                </div>
+              );
             })}
         </div>
       )}

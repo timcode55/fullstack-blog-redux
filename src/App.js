@@ -5,6 +5,7 @@ import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import Blog from "./components/Blog";
 import axios from "axios";
 import "./App.css";
 
@@ -129,9 +130,10 @@ const App = () => {
     (blog) => blog.user?.username === newUser?.username
   );
 
-  const displayBlogDetails = () => {
-    document.querySelector(".blog-details").classList.add("show");
-  };
+  // const handleDeleteRender = async (id) => {
+  // 	await axios.delete(`http://localhost:3001/api/persons/${id}`).then((response) => {});
+  // 	setUpdateRender(() => !updateRender);
+  // };
 
   return (
     <div>
@@ -152,11 +154,7 @@ const App = () => {
             showBlogs.map((item) => {
               return (
                 <div className="blog-details">
-                  <h2 key={item.id}>{item.title}</h2>
-                  <h2>{item.author}</h2>
-                  <h2>{item.url}</h2>
-                  <h2>{item.likes}</h2>
-                  <button onClick={displayBlogDetails}>view</button>
+                  <Blog blog={item} />
                 </div>
               );
             })}

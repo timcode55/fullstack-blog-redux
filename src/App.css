@@ -18,6 +18,6 @@
   margin-bottom: 10px;
 }
 
-.blog-details.show {
+.display.show {
   visibility: hidden;
 }

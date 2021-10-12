@@ -15,10 +15,11 @@ const App = () => {
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [updatedList, setUpdatedList] = useState(false);
-  const [username, setUsername] = useState("newusertime");
-  const [password, setPassword] = useState("darkness33");
+  const [username, setUsername] = useState("steelcasedude");
+  const [password, setPassword] = useState("chairsrock33");
   const [type, setType] = useState("");
   const [newUser, setNewUser] = useState(null);
+  const [currentLikes, setCurrentLikes] = useState(true);
 
   useEffect(() => {
     setTimeout(() => {
@@ -27,7 +28,7 @@ const App = () => {
         setBlogs(initialBlogs);
       });
     }, 500);
-  }, [updatedList]);
+  }, [updatedList, currentLikes]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -72,7 +73,8 @@ const App = () => {
     const blogObject = {
       title: blog.title,
       author: blog.author,
-      url: blog.url
+      url: blog.url,
+      likes: 0
     };
     console.log(blogObject, "blogobject*****");
     axios.post(
@@ -92,6 +94,16 @@ const App = () => {
       setType(null);
     }, 5000);
     console.log(blogs, "BLOGS 98*******");
+  };
+
+  const addLikes = (likes, id) => {
+    console.log(likes, "BLOG.LIKES");
+    console.log(typeof id, "TYPEOF ID");
+    axios.put(`http://localhost:3003/api/blogs/${id}`, {
+      token: newUser.token,
+      likes
+    });
+    setCurrentLikes(!currentLikes);
   };
 
   const handleLogin = async (event) => {
@@ -126,14 +138,11 @@ const App = () => {
 
   const loggedIn = window.localStorage.getItem("loggedBlogappUser");
 
-  const showBlogs = blogs.filter(
-    (blog) => blog.user?.username === newUser?.username
-  );
+  const showBlogs = blogs
+    .filter((blog) => blog.user?.username === newUser?.username)
+    .sort((a, b) => (a.likes > b.likes ? 1 : -1));
 
-  // const handleDeleteRender = async (id) => {
-  // 	await axios.delete(`http://localhost:3001/api/persons/${id}`).then((response) => {});
-  // 	setUpdateRender(() => !updateRender);
-  // };
+  console.log(showBlogs, "SHOWBLOGS");
 
   return (
     <div>
@@ -154,7 +163,7 @@ const App = () => {
             showBlogs.map((item) => {
               return (
                 <div className="blog-details">
-                  <Blog blog={item} />
+                  <Blog blog={item} addLikes={addLikes} />
                 </div>
               );
             })}

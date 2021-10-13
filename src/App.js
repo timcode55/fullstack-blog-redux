@@ -19,7 +19,7 @@ const App = () => {
   const [password, setPassword] = useState("chairsrock33");
   const [type, setType] = useState("");
   const [newUser, setNewUser] = useState(null);
-  const [currentLikes, setCurrentLikes] = useState(true);
+  const [render, setRender] = useState(true);
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,7 +28,7 @@ const App = () => {
         setBlogs(initialBlogs);
       });
     }, 500);
-  }, [updatedList, currentLikes]);
+  }, [updatedList, render]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -103,7 +103,14 @@ const App = () => {
       token: newUser.token,
       likes
     });
-    setCurrentLikes(!currentLikes);
+    setRender(!render);
+  };
+
+  const deleteBlog = (id) => {
+    axios.delete(`http://localhost:3003/api/blogs/${id}`, {
+      token: newUser.token
+    });
+    setRender(!render);
   };
 
   const handleLogin = async (event) => {
@@ -163,7 +170,11 @@ const App = () => {
             showBlogs.map((item) => {
               return (
                 <div className="blog-details">
-                  <Blog blog={item} addLikes={addLikes} />
+                  <Blog
+                    blog={item}
+                    addLikes={addLikes}
+                    deleteBlog={deleteBlog}
+                  />
                 </div>
               );
             })}

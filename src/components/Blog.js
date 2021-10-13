@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Togglable from "./Togglable";
 
-const Blog = ({ blog, addLikes }) => {
+const Blog = ({ blog, addLikes, deleteBlog }) => {
   const viewBlogRef = useRef(null);
 
   const blogStyle = {
@@ -21,6 +21,7 @@ const Blog = ({ blog, addLikes }) => {
         <h1>Likes {blog.likes}</h1>
         <button onClick={() => addLikes(blog.likes, blog.id)}>Like</button>
         <h1>{blog.author}</h1>
+        <button onClick={() => deleteBlog(blog.id)}>Remove</button>
       </Togglable>
     </div>
   );

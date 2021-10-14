@@ -169,7 +169,7 @@ const App = () => {
             logged &&
             showBlogs.map((item) => {
               return (
-                <div className="blog-details">
+                <div className="blog-details" key={item.id}>
                   <Blog
                     blog={item}
                     addLikes={addLikes}

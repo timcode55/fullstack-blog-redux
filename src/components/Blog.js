@@ -13,10 +13,10 @@ const Blog = ({ blog, addLikes, deleteBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title}
       <Togglable buttonLabel="View" ref={viewBlogRef}>
-        <h1>{blog.title}</h1>
+        {/* <h1>{blog.title}</h1> */}
         <h1>{blog.url}</h1>
         <h1>Likes {blog.likes}</h1>
         <button onClick={() => addLikes(blog.likes, blog.id)}>Like</button>

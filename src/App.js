@@ -15,8 +15,10 @@ const App = () => {
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [updatedList, setUpdatedList] = useState(false);
-  const [username, setUsername] = useState("steelcasedude");
-  const [password, setPassword] = useState("chairsrock33");
+  // const [username, setUsername] = useState("steelcasedude");
+  // const [password, setPassword] = useState("chairsrock33");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [type, setType] = useState("");
   const [newUser, setNewUser] = useState(null);
   const [render, setRender] = useState(true);
@@ -43,14 +45,9 @@ const App = () => {
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? "none" : "" };
     const showWhenVisible = { display: loginVisible ? "" : "none" };
-    console.log(hideWhenVisible, "hideWhenVisible*****");
-    console.log(showWhenVisible, "showWhenVisible*****");
     return (
       <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>Enter Login</button>
-        </div>
-        <div style={showWhenVisible}>
+        <div>
           <Togglable buttonLabel="login">
             <LoginForm
               username={username}

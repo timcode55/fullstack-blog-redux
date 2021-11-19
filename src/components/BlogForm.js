@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { createStore } from "redux";
-import blogReducer from "../reducers/blogReducer";
+import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
 
-const store = createStore(blogReducer);
-
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -29,8 +27,7 @@ const BlogForm = ({ createBlog }) => {
       author: author,
       url: url
     };
-    console.log(blog, " BLOG IN HANDLESUBMIT");
-    createBlog(blog);
+    dispatch(createBlog(blog));
 
     setTitle("");
     setAuthor("");

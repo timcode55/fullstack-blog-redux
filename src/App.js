@@ -32,21 +32,22 @@ const App = () => {
   const [newUser, setNewUser] = useState(null);
   const [render, setRender] = useState(true);
 
-  useEffect(
-    () => {
-      setTimeout(() => {
-        blogService.getAll().then((initialBlogs) => {
-          console.log(initialBlogs, "INITIALBLOGS ON UE");
-          // setBlogs(initialBlogs);
-          // dispatch(createBlog());
-        });
-      }, 500);
-    },
-    [
-      // updatedList,
-      // render
-    ]
-  );
+  // useEffect(
+  //   () => {
+  //     setTimeout(() => {
+  //       blogService.getAll().then((initialBlogs) => {
+  //         console.log(initialBlogs, "INITIALBLOGS ON UE");
+  //         dispatch(createBlog(initialBlogs));
+  //         // setBlogs(initialBlogs);
+  //         // dispatch(createBlog());
+  //       });
+  //     }, 500);
+  //   },
+  //   [
+  //     // updatedList,
+  //     // render
+  //   ]
+  // );
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -197,7 +198,7 @@ const App = () => {
   // const showBlogs = blogs
   //   .filter((blog) => blog.user?.username === newUser?.username)
   //   .sort((a, b) => (a.likes > b.likes ? 1 : -1));
-  const showBlogs = blogs.sort((a, b) => (a.likes > b.likes ? 1 : -1));
+  const showBlogs = blogs?.sort((a, b) => (a.likes > b.likes ? 1 : -1));
 
   console.log(showBlogs, "SHOWBLOGS");
 
@@ -218,7 +219,7 @@ const App = () => {
           <NewBlog />
           {loggedIn &&
             logged &&
-            showBlogs.map((item) => {
+            showBlogs?.map((item) => {
               return (
                 <div className="blog-details" key={item.title}>
                   <Blog

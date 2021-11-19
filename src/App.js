@@ -4,17 +4,26 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm";
+import NewBlog from "./components/NewBlog";
+// import BlogForm from "./components/BlogForm";
 import Blog from "./components/Blog";
 import axios from "axios";
+import { createStore } from "redux";
+import { useSelector, useDispatch } from "react-redux";
+import { createBlog } from "./reducers/blogReducer";
+import blogReducer from "./reducers/blogReducer";
 import "./App.css";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const blogs = useSelector((state) => state);
+  console.log(blogs, "BLOGS");
   const [loginVisible, setLoginVisible] = useState(false);
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [updatedList, setUpdatedList] = useState(false);
+  // const [updatedList, setUpdatedList] = useState(false);
   // const [username, setUsername] = useState("steelcasedude");
   // const [password, setPassword] = useState("chairsrock33");
   const [username, setUsername] = useState("");
@@ -23,14 +32,21 @@ const App = () => {
   const [newUser, setNewUser] = useState(null);
   const [render, setRender] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      blogService.getAll().then((initialBlogs) => {
-        console.log(initialBlogs, "INITIALBLOGS ON UE");
-        setBlogs(initialBlogs);
-      });
-    }, 500);
-  }, [updatedList, render]);
+  useEffect(
+    () => {
+      setTimeout(() => {
+        blogService.getAll().then((initialBlogs) => {
+          console.log(initialBlogs, "INITIALBLOGS ON UE");
+          // setBlogs(initialBlogs);
+          // dispatch(createBlog());
+        });
+      }, 500);
+    },
+    [
+      // updatedList,
+      // render
+    ]
+  );
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -41,6 +57,16 @@ const App = () => {
       setLogged(true);
     }
   }, []);
+
+  // const blogReducer = (state = [], action) => {
+  //   switch (action.type) {
+  //     case "ADD_BLOG":
+  //       return state.concat(action.data);
+  //   }
+  //   return state;
+  // };
+
+  const store = createStore(blogReducer);
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? "none" : "" };
@@ -63,35 +89,61 @@ const App = () => {
     );
   };
 
-  const blogFormRef = useRef(null);
+  // const blogFormRef = useRef(null);
 
-  const createBlog = async (blog) => {
-    blogFormRef.current.toggleVisibility();
-    const blogObject = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: 0
-    };
-    console.log(blogObject, "blogobject*****");
-    axios.post(
-      "http://localhost:3003/api/blogs",
-      { token: newUser.token },
-      blogObject
-    );
-    blogService.create(blogObject);
-    setBlogs(blogs.concat(blogObject));
-    setUpdatedList(!updatedList);
-    setErrorMessage(
-      `A new blog ${blogObject.title} by ${blogObject.author} added`
-    );
-    setType("blog");
-    setTimeout(() => {
-      setErrorMessage(null);
-      setType(null);
-    }, 5000);
-    console.log(blogs, "BLOGS 98*******");
-  };
+  // const createBlog = async (blog) => {
+  //   // const blogObject = {
+  //   //   title: blog.title,
+  //   //   author: blog.author,
+  //   //   url: blog.url,
+  //   //   likes: 0
+  //   // };
+
+  //   return {
+  //     type: "ADD_BLOG",
+  //     data: {
+  //       title: blog.title,
+  //       author: blog.author,
+  //       url: blog.url,
+  //       likes: 0
+  //     }
+  //   };
+
+  //   store.dispatch({
+  //     type: "ADD_BLOG",
+  //     data: {
+  //       title: blog.title,
+  //       author: blog.author,
+  //       url: blog.url,
+  //       likes: 0
+  //     }
+  //   });
+  //   blogFormRef.current.toggleVisibility();
+
+  //   // console.log(blogObject, "blogobject*****");
+  //   axios.post(
+  //     "http://localhost:3003/api/blogs",
+  //     { token: newUser.token },
+  //     blogObject
+  //   );
+  //   blogService.create(blogObject);
+  //   setBlogs(blogs.concat(blogObject));
+  //   setUpdatedList(!updatedList);
+  //   setErrorMessage(
+  //     `A new blog ${blogObject.title} by ${blogObject.author} added`
+  //   );
+  //   setType("blog");
+  //   setTimeout(() => {
+  //     setErrorMessage(null);
+  //     setType(null);
+  //   }, 5000);
+  //   console.log(blogs, "BLOGS 98*******");
+  //   return blogObject;
+  // };
+
+  // const addBlog = (blog) => {
+  //   dispatch(createBlog(blog));
+  // };
 
   const addLikes = (likes, id) => {
     console.log(likes, "BLOG.LIKES");
@@ -142,9 +194,10 @@ const App = () => {
 
   const loggedIn = window.localStorage.getItem("loggedBlogappUser");
 
-  const showBlogs = blogs
-    .filter((blog) => blog.user?.username === newUser?.username)
-    .sort((a, b) => (a.likes > b.likes ? 1 : -1));
+  // const showBlogs = blogs
+  //   .filter((blog) => blog.user?.username === newUser?.username)
+  //   .sort((a, b) => (a.likes > b.likes ? 1 : -1));
+  const showBlogs = blogs.sort((a, b) => (a.likes > b.likes ? 1 : -1));
 
   console.log(showBlogs, "SHOWBLOGS");
 
@@ -159,14 +212,15 @@ const App = () => {
         <div>
           <h4>{newUser.name} logged in</h4>
           {loggedIn && <button onClick={() => handleLogOut()}>Logout </button>}
-          <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
-          </Togglable>
+          {/* <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable> */}
+          <NewBlog />
           {loggedIn &&
             logged &&
             showBlogs.map((item) => {
               return (
-                <div className="blog-details" key={item.id}>
+                <div className="blog-details" key={item.title}>
                   <Blog
                     blog={item}
                     addLikes={addLikes}

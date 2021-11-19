@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { createStore } from "redux";
+import blogReducer from "../reducers/blogReducer";
+import { createBlog } from "../reducers/blogReducer";
+
+const store = createStore(blogReducer);
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("");
@@ -17,13 +22,15 @@ const BlogForm = ({ createBlog }) => {
     setUrl(event.target.value);
   };
 
-  const addBlog = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    createBlog({
+    const blog = {
       title: title,
       author: author,
       url: url
-    });
+    };
+    console.log(blog, " BLOG IN HANDLESUBMIT");
+    createBlog(blog);
 
     setTitle("");
     setAuthor("");
@@ -31,7 +38,7 @@ const BlogForm = ({ createBlog }) => {
   };
   return (
     <div>
-      <form onSubmit={addBlog} className="formDiv">
+      <form onSubmit={handleSubmit} className="formDiv">
         <h1>Add a New Blog</h1>
         title:{" "}
         <input

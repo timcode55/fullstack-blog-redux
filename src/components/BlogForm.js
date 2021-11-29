@@ -26,10 +26,11 @@ const BlogForm = () => {
     const blog = {
       title: title,
       author: author,
-      url: url
+      url: url,
+      likes: 0
     };
     dispatch(createBlog(blog));
-    dispatch(handleNotification(blog.title, "blog"));
+    dispatch(handleNotification(title, "john"));
     setTimeout(() => {
       dispatch(handleNotification("", ""));
     }, 5000);

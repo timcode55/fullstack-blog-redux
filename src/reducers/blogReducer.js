@@ -1,5 +1,3 @@
-import axios from "axios";
-import blogs from "../services/blogs";
 import blogService from "../services/blogs";
 
 const initialState = [
@@ -23,32 +21,27 @@ const initialState = [
   }
 ];
 
-// const getData = async () => {
-//   // await axios.get("http://localhost:3003/api/blogs").then((response) => {
-//   //   console.log(response.data, "RESPONSE.DATA");
-//   // });
-
-//   setTimeout(() => {
-//     blogService.getAll().then((initialBlogs) => {
-//       console.log(initialBlogs, "INITIALBLOGS ON UE");
-//       initialState = initialBlogs;
-//     });
-//   }, 500);
-// };
-// getData();
-// const initialState = getData();
-
-// console.log(getData(), "GETDATA");
-
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case "ADD_BLOG":
       console.log(state, "STATE IN BLOGREDUCER ON ADD_BLOG");
-      return [...state, action.data];
+
+      return [state[0].concat(action.data)];
     case "INIT_BLOGS":
       return [...state, action.data];
     case "ADD_LIKES":
-      return [...state, action.data];
+      let new_array = [...state][0].map((element) => {
+        let updateLikes = element.likes;
+        return element.id === action.id
+          ? { ...element, likes: (updateLikes += 1) }
+          : element;
+      });
+      return [[...new_array]];
+    case "REMOVE_BLOG":
+      let updateArray = [...state][0].filter((item) => {
+        return item.id !== action.id;
+      });
+      return [[...updateArray]];
   }
   return state;
 };
@@ -64,21 +57,30 @@ export const initializeBlogs = () => {
   };
 };
 
+export const removeBlog = (id) => {
+  return async (dispatch) => {
+    dispatch({
+      type: "REMOVE_BLOG",
+      id
+    });
+  };
+};
+
 export const incLikes = (id, likeBlog) => {
+  console.log(id, "ID IN INCLIKES");
   return async (dispatch) => {
     const blog = await blogService.update(id, likeBlog);
     blog.likes += 1;
     console.log(blog, "BLOG IN INCLIKES");
     dispatch({
       type: "ADD_LIKES",
-      data: blog
+      data: blog,
+      id
     });
   };
 };
 
 export const createBlog = (blog) => {
-  // console.log(blog, "BLOG***************************");
-  // axios.post("http://localhost:3003/api/blogs", { blog });
   return async (dispatch) => {
     const newBlog = await blogService.create(blog);
     dispatch({

@@ -10,44 +10,41 @@ import Blog from "./components/Blog";
 import axios from "axios";
 import { createStore } from "redux";
 import { useSelector, useDispatch } from "react-redux";
-import { createBlog } from "./reducers/blogReducer";
+import { createBlog, initializeBlogs, incLikes } from "./reducers/blogReducer";
 import blogReducer from "./reducers/blogReducer";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state);
+  const blogs = useSelector((state) => state.blogs);
   console.log(blogs, "BLOGS");
+  const notification = useSelector((state) => state.notification);
+  const type = useSelector((state) => state.notification);
+  console.log(notification, "notification");
+  console.log(type, "type");
   const [loginVisible, setLoginVisible] = useState(false);
   // const [blogs, setBlogs] = useState([]);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  // const [updatedList, setUpdatedList] = useState(false);
+  const [updatedList, setUpdatedList] = useState(false);
   // const [username, setUsername] = useState("steelcasedude");
   // const [password, setPassword] = useState("chairsrock33");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [type, setType] = useState("");
+  // const [type, setType] = useState("");
   const [newUser, setNewUser] = useState(null);
   const [render, setRender] = useState(true);
 
-  // useEffect(
-  //   () => {
-  //     setTimeout(() => {
-  //       blogService.getAll().then((initialBlogs) => {
-  //         console.log(initialBlogs, "INITIALBLOGS ON UE");
-  //         dispatch(createBlog(initialBlogs));
-  //         // setBlogs(initialBlogs);
-  //         // dispatch(createBlog());
-  //       });
-  //     }, 500);
-  //   },
-  //   [
-  //     // updatedList,
-  //     // render
-  //   ]
-  // );
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(initializeBlogs());
+    }, 500);
+  }, [
+    dispatch
+    // updatedList,
+    // render
+  ]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -146,13 +143,15 @@ const App = () => {
   //   dispatch(createBlog(blog));
   // };
 
-  const addLikes = (likes, id) => {
-    console.log(likes, "BLOG.LIKES");
-    console.log(typeof id, "TYPEOF ID");
+  const addLikes = async (blog, id) => {
+    const likes = blog.likes;
+    console.log(blog, "BLOG IN ADDLIKES");
     axios.put(`http://localhost:3003/api/blogs/${id}`, {
       token: newUser.token,
       likes
     });
+    const newBlog = await dispatch(incLikes(id, blog));
+    console.log(newBlog, "newblog");
     setRender(!render);
   };
 
@@ -198,14 +197,14 @@ const App = () => {
   // const showBlogs = blogs
   //   .filter((blog) => blog.user?.username === newUser?.username)
   //   .sort((a, b) => (a.likes > b.likes ? 1 : -1));
-  const showBlogs = blogs?.sort((a, b) => (a.likes > b.likes ? 1 : -1));
+  const showBlogs = blogs[0]?.sort((a, b) => (a.likes > b.likes ? 1 : -1));
 
   console.log(showBlogs, "SHOWBLOGS");
-
+  console.log(store.getState(), "STORE");
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} type={type} />
+      <Notification message={notification} type={type} />
 
       {newUser === null || !loggedIn ? (
         loginForm()

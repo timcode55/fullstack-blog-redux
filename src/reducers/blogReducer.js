@@ -1,5 +1,6 @@
 import axios from "axios";
-// import blogService from "../services/blogs";
+import blogs from "../services/blogs";
+import blogService from "../services/blogs";
 
 const initialState = [
   {
@@ -39,26 +40,51 @@ const initialState = [
 
 // console.log(getData(), "GETDATA");
 
-const blogReducer = (state = initialState, action) => {
+const blogReducer = (state = [], action) => {
   switch (action.type) {
     case "ADD_BLOG":
       console.log(state, "STATE IN BLOGREDUCER ON ADD_BLOG");
+      return [...state, action.data];
+    case "INIT_BLOGS":
+      return [...state, action.data];
+    case "ADD_LIKES":
       return [...state, action.data];
   }
   return state;
 };
 
+export const initializeBlogs = () => {
+  return async (dispatch) => {
+    const blogs = await blogService.getAll();
+    console.log(blogs, "GETTING DB BLOGS");
+    dispatch({
+      type: "INIT_BLOGS",
+      data: blogs
+    });
+  };
+};
+
+export const incLikes = (id, likeBlog) => {
+  return async (dispatch) => {
+    const blog = await blogService.update(id, likeBlog);
+    blog.likes += 1;
+    console.log(blog, "BLOG IN INCLIKES");
+    dispatch({
+      type: "ADD_LIKES",
+      data: blog
+    });
+  };
+};
+
 export const createBlog = (blog) => {
   // console.log(blog, "BLOG***************************");
   // axios.post("http://localhost:3003/api/blogs", { blog });
-  return {
-    type: "ADD_BLOG",
-    data: {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: 0
-    }
+  return async (dispatch) => {
+    const newBlog = await blogService.create(blog);
+    dispatch({
+      type: "ADD_BLOG",
+      data: newBlog
+    });
   };
 };
 

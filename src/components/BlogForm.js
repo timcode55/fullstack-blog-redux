@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
+import { handleNotification } from "../reducers/notificationReducer";
 
 const BlogForm = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,10 @@ const BlogForm = () => {
       url: url
     };
     dispatch(createBlog(blog));
+    dispatch(handleNotification(blog.title, "blog"));
+    setTimeout(() => {
+      dispatch(handleNotification("", ""));
+    }, 5000);
 
     setTitle("");
     setAuthor("");

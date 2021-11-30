@@ -13,12 +13,17 @@ import { removeBlog, initializeBlogs, incLikes } from "./reducers/blogReducer";
 import blogReducer from "./reducers/blogReducer";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { handleUser } from "./reducers/userReducer";
+import Users from "./components/Users";
+import User from "./components/User";
 
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const notification = useSelector((state) => state.notification[0]);
   const type = useSelector((state) => state.notification[0]);
+  const user = useSelector((state) => state.users);
+  console.log(user, "USER");
   const [loginVisible, setLoginVisible] = useState(false);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -40,6 +45,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
+      dispatch(handleUser(user));
       setNewUser(user);
       blogService.setToken(user.token);
       setLogged(true);
@@ -117,6 +123,7 @@ const App = () => {
   const loggedIn = window.localStorage.getItem("loggedBlogappUser");
 
   const showBlogs = blogs[0]?.sort((a, b) => (a.likes > b.likes ? -1 : 1));
+  // const showUsers = user[0]?.sort((a, b) => (a > b ? -1 : 1));
 
   console.log(showBlogs, "SHOWBLOGS");
   return (
@@ -148,6 +155,16 @@ const App = () => {
             })}
         </div>
       )}
+      <Users />
+      {loggedIn &&
+        logged &&
+        user?.map((item) => {
+          return (
+            <div className="blog-details" key={item.token}>
+              <User user={item} />
+            </div>
+          );
+        })}
     </div>
   );
 };

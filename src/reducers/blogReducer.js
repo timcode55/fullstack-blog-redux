@@ -24,8 +24,6 @@ const initialState = [
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case "ADD_BLOG":
-      console.log(state, "STATE IN BLOGREDUCER ON ADD_BLOG");
-
       return [state[0].concat(action.data)];
     case "INIT_BLOGS":
       return [...state, action.data];
@@ -71,7 +69,6 @@ export const incLikes = (id, likeBlog) => {
   return async (dispatch) => {
     const blog = await blogService.update(id, likeBlog);
     blog.likes += 1;
-    console.log(blog, "BLOG IN INCLIKES");
     dispatch({
       type: "ADD_LIKES",
       data: blog,

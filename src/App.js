@@ -17,11 +17,8 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-  console.log(blogs, "BLOGS");
-  const notification = useSelector((state) => state.notification);
-  const type = useSelector((state) => state.notification);
-  console.log(notification, "notification");
-  console.log(type, "type");
+  const notification = useSelector((state) => state.notification[0]);
+  const type = useSelector((state) => state.notification[0]);
   const [loginVisible, setLoginVisible] = useState(false);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -90,14 +87,12 @@ const App = () => {
   };
 
   const handleLogin = async (event) => {
-    console.log("handlelogin called");
     event.preventDefault();
     try {
       const user = await loginService.login({
         username,
         password
       });
-      console.log(user, "USER199******");
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       setLogged(true);
       blogService.setToken(user.token);
@@ -124,11 +119,12 @@ const App = () => {
   const showBlogs = blogs[0]?.sort((a, b) => (a.likes > b.likes ? -1 : 1));
 
   console.log(showBlogs, "SHOWBLOGS");
-  console.log(store.getState(), "STORE");
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={notification} type={type} />
+      {notification && (
+        <Notification message={notification[0]} type={type[1]} />
+      )}
 
       {newUser === null || !loggedIn ? (
         loginForm()

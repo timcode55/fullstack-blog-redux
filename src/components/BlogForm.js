@@ -30,7 +30,7 @@ const BlogForm = () => {
       likes: 0
     };
     dispatch(createBlog(blog));
-    dispatch(handleNotification(title, "john"));
+    dispatch(handleNotification(title, "blog"));
     setTimeout(() => {
       dispatch(handleNotification("", ""));
     }, 5000);

@@ -10,6 +10,7 @@ import axios from "axios";
 import { createStore } from "redux";
 import { useSelector, useDispatch } from "react-redux";
 import { removeBlog, initializeBlogs, incLikes } from "./reducers/blogReducer";
+import { getUsers } from "./reducers/userReducer";
 import blogReducer from "./reducers/blogReducer";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -22,8 +23,8 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs);
   const notification = useSelector((state) => state.notification[0]);
   const type = useSelector((state) => state.notification[0]);
-  const user = useSelector((state) => state.users);
-  console.log(user, "USER");
+  const user = useSelector((state) => state.users[1]);
+  console.log(user, "USER55");
   const [loginVisible, setLoginVisible] = useState(false);
   const [logged, setLogged] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -49,6 +50,7 @@ const App = () => {
       setNewUser(user);
       blogService.setToken(user.token);
       setLogged(true);
+      dispatch(getUsers());
     }
   }, []);
 
@@ -124,6 +126,10 @@ const App = () => {
 
   const showBlogs = blogs[0]?.sort((a, b) => (a.likes > b.likes ? -1 : 1));
   // const showUsers = user[0]?.sort((a, b) => (a > b ? -1 : 1));
+  // const getAllUsers = async () => {
+  //   await blogService.getUsers();
+  // };
+  // console.log(dispatch(getUsers()), "GETALLUSERS");
 
   console.log(showBlogs, "SHOWBLOGS");
   return (
@@ -160,8 +166,17 @@ const App = () => {
         logged &&
         user?.map((item) => {
           return (
-            <div className="blog-details" key={item.token}>
-              <User user={item} />
+            <div className="blog-details" key={item.id}>
+              <tbody>
+                <tr className="table-row">
+                  <td>
+                    <h1 className="user-name">{item.name}</h1>
+                  </td>
+                  <td>
+                    <h1>{item.blogs.length}</h1>
+                  </td>
+                </tr>
+              </tbody>
             </div>
           );
         })}

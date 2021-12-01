@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Togglable from "./Togglable";
 
 const Blog = ({ blog, addLikes, deleteBlog }) => {
+  console.log(blog, "BLOG");
   const viewBlogRef = useRef(null);
 
   const blogStyle = {

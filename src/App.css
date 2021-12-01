@@ -21,3 +21,12 @@
 .display.show {
   visibility: hidden;
 }
+
+.table-row {
+  display: flex;
+  margin-right: 20px;
+}
+
+.user-name {
+  margin-right: 50px;
+}

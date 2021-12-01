@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import Togglable from "./Togglable";
+import { useParams, Link } from "react-router-dom";
 
 const Blog = ({ blog, addLikes, deleteBlog }) => {
   console.log(blog, "BLOG");
@@ -13,17 +14,21 @@ const Blog = ({ blog, addLikes, deleteBlog }) => {
     marginBottom: 5
   };
 
+  const id = useParams().id;
+  console.log(typeof id, "ID IN USE PARAMS");
+  const getBlogs = blog.find((n) => n.id === id);
+  console.log(getBlogs, "GETBLOGS");
   return (
-    <div style={blogStyle} className="blog">
-      {blog.title}
-      <Togglable buttonLabel="View" ref={viewBlogRef}>
-        {/* <h1>{blog.title}</h1> */}
-        <h1>{blog.url}</h1>
-        <h1>Likes {blog.likes}</h1>
-        <button onClick={() => addLikes(blog, blog.id)}>Like</button>
-        <h1>{blog.author}</h1>
-        <button onClick={() => deleteBlog(blog.id)}>Remove</button>
-      </Togglable>
+    <div>
+      <h1>{getBlogs.username} </h1>
+      <h1>Added Blogs</h1>
+      {getBlogs.blogs.map((item) => {
+        return (
+          <Link to={`/blogs/${item.id}`}>
+            <h1>{item.title}</h1>
+          </Link>
+        );
+      })}
     </div>
   );
 };

@@ -132,6 +132,11 @@ const App = () => {
   // console.log(dispatch(getUsers()), "GETALLUSERS");
 
   console.log(showBlogs, "SHOWBLOGS");
+
+  const padding = {
+    padding: 5
+  };
+
   return (
     <div>
       <h1>Blogs</h1>
@@ -151,11 +156,11 @@ const App = () => {
             showBlogs?.map((item) => {
               return (
                 <div className="blog-details" key={item.title}>
-                  <Blog
+                  {/* <Blog
                     blog={item}
                     addLikes={addLikes}
                     deleteBlog={deleteBlog}
-                  />
+                  /> */}
                 </div>
               );
             })}
@@ -166,18 +171,27 @@ const App = () => {
         logged &&
         user?.map((item) => {
           return (
-            <div className="blog-details" key={item.id}>
-              <tbody>
-                <tr className="table-row">
-                  <td>
-                    <h1 className="user-name">{item.name}</h1>
-                  </td>
-                  <td>
-                    <h1>{item.blogs.length}</h1>
-                  </td>
-                </tr>
-              </tbody>
-            </div>
+            <Router>
+              <div className="blog-details" key={item.id}>
+                <tbody>
+                  <tr className="table-row">
+                    <td>
+                      <Link style={padding} to={`/users/${item.id}`}>
+                        <h1 className="user-name">{item.name}</h1>
+                      </Link>
+                      <Switch>
+                        <Route path="/users/:id">
+                          <Blog blog={user} />
+                        </Route>
+                      </Switch>
+                    </td>
+                    <td>
+                      <h1>{item.blogs.length}</h1>
+                    </td>
+                  </tr>
+                </tbody>
+              </div>
+            </Router>
           );
         })}
     </div>
